@@ -9,8 +9,7 @@ clear:
 	rm program
 
 init:
-	TARGET_IMAGE=tensorflow/tensorflow
-	docker pull $TARGET_IMAGE
+	docker pull tensorflow/tensorflow
 	bash install-runnc.sh
 	bash install-runsc.sh
 	bash install-youki.sh
