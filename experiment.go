@@ -11,8 +11,12 @@ import (
 type Experiment struct {
 	totalContainers int
 	containerRatio  map[string]int
-	Result          map[string]float32
 	requestOrder    []string
+}
+
+type elapsedTime struct {
+	runtime  string
+	duration time.Duration
 }
 
 func (e *Experiment) Init(totalContainers int, containerRatio map[string]int) {
@@ -33,8 +37,8 @@ func (e *Experiment) Init(totalContainers int, containerRatio map[string]int) {
 	e.requestOrder = requestOrder
 }
 
-func (e *Experiment) Run() {
-	var ch = make(chan time.Duration, e.totalContainers)
+func (e *Experiment) Run() map[string]time.Duration {
+	var ch = make(chan elapsedTime, e.totalContainers)
 	var wg sync.WaitGroup
 
 	for i, runtime := range e.requestOrder {
@@ -49,16 +53,22 @@ func (e *Experiment) Run() {
 
 	// 모든 컨테이너 실행 완료
 
-	var avg time.Duration
-	for j := 1; j <= e.totalContainers; j++ {
-		avg += <-ch
+	// 각 컨테이너 런타임별 컨테이너 실행시간 평균값 계산
+	temp := make(map[string]time.Duration)
+	result := make(map[string]time.Duration)
+	for i := 1; i <= e.totalContainers; i++ {
+		t := <-ch
+		temp[t.runtime] += t.duration
 	}
-	avg /= time.Duration(e.totalContainers)
-	fmt.Println("평균 실행시간:", avg)
+	for runtime, duration := range temp {
+		result[runtime] = duration / time.Duration(e.totalContainers*e.containerRatio[runtime]/100)
+	}
+
+	return result
 }
 
 // 입력 받은 런타임으로 컨테이너를 실행시키고 그 실행 시간을 출력한다
-func runContainer(ch chan time.Duration, runtime string) {
+func runContainer(ch chan elapsedTime, runtime string) {
 	startTime := time.Now()
 	cmd := exec.Command("./script.sh", runtime)
 	var _, err = cmd.Output()
@@ -67,7 +77,7 @@ func runContainer(ch chan time.Duration, runtime string) {
 		fmt.Println(err)
 	}
 
-	elapsedTime := time.Since(startTime)
-	//fmt.Println(elapsedTime)
-	ch <- elapsedTime
+	duration := time.Since(startTime)
+
+	ch <- elapsedTime{runtime: runtime, duration: duration}
 }

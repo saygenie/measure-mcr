@@ -9,7 +9,7 @@ import (
 )
 
 func main() {
-	var totalContainersList = []int{10}
+	var totalContainersList = []int{10, 20, 30}
 	var containerRatioList = readDataFromCSV("container-ratio.csv")
 
 	for _, totalContainers := range totalContainersList {
@@ -18,9 +18,9 @@ func main() {
 			fmt.Println("containerRatio:", containerRatio)
 			exp := Experiment{}
 			exp.Init(totalContainers, containerRatio)
-			exp.Run()
-			fmt.Println(exp.Result)
-			fmt.Printf("[총 컨테이너 %d개] %d번째 실험 종료\n", totalContainers, j+1)
+			result := exp.Run()
+			fmt.Println(result)
+			fmt.Printf("[총 컨테이너 %d개] %d번째 실험 종료\n\n", totalContainers, j+1)
 		}
 
 	}
