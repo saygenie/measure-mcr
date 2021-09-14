@@ -1,7 +1,6 @@
 package main
 
 import (
-	"./experiment"
 	"bufio"
 	"encoding/csv"
 	"fmt"
@@ -15,13 +14,13 @@ func main() {
 
 	for _, totalContainers := range totalContainersList {
 		for j, containerRatio := range containerRatioList {
-			fmt.Printf("[총 컨테이너 %d개] %d번째 실험 시작\n", totalContainers, j + 1)
+			fmt.Printf("[총 컨테이너 %d개] %d번째 실험 시작\n", totalContainers, j+1)
 			fmt.Println("containerRatio:", containerRatio)
-			exp := experiment.Experiment{}
+			exp := Experiment{}
 			exp.Init(totalContainers, containerRatio)
 			exp.Run()
 			fmt.Println(exp.Result)
-			fmt.Printf("[총 컨테이너 %d개] %d번째 실험 종료\n", totalContainers, j + 1)
+			fmt.Printf("[총 컨테이너 %d개] %d번째 실험 종료\n", totalContainers, j+1)
 		}
 
 	}
