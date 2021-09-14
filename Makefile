@@ -2,7 +2,7 @@ build:
 	go build -o program .
 
 run:
-	build
+	make build
 	./program
 
 clear:
@@ -17,5 +17,5 @@ init:
 
 
 all:
-	init
-	run
+	make init
+	make run
