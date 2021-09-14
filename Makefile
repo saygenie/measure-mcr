@@ -1,5 +1,5 @@
 build:
-	go build -o ./program main.go
+	go build -o program .
 
 run:
 	build

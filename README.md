@@ -1,6 +1,6 @@
-# Measure Multi Container Runtime
+# Measure Multiple Container Runtime
 
 ## Usage
 ```go
-go run main.go
+go run .
 ```
