@@ -1,0 +1,13 @@
+{
+  "runtimes": {
+    "runsc": {
+      "path": "/usr/bin/runsc"
+    },
+    "crun": {
+      "path": "/usr/local/bin/crun"
+    },
+    "youki": {
+      "path": "/usr/local/bin/youki"
+    }
+  }
+}

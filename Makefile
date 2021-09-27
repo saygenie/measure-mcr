@@ -10,10 +10,11 @@ clear:
 
 init:
 	docker pull tensorflow/tensorflow
-	bash install-runnc.sh
-	bash install-runsc.sh
-	bash install-youki.sh
-
+	sudo cp /vagrant/daemon-config.json /etc/docker/daemon.json
+	bash scripts/install-runsc.sh
+	bash scripts/install-crun.sh
+	bash scripts/install-youki.sh
+	sudo systemctl restart docker.service
 
 all:
 	make init
