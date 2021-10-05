@@ -1,0 +1,26 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.configure("2") do |config|
+  config.vm.box = "ubuntu/focal64"
+  config.vm.provider "virtualbox" do |vb|
+    vb.memory = "8192"
+  end
+  config.vm.network "forwarded_port", guest: 2375, host: 2375
+  config.vm.provision "shell", inline: <<-SHELL
+    sudo apt-get update &&
+    curl -sSL https://get.docker.com/ | sh && # install docker
+    usermod -a -G docker vagrant &&
+    sudo apt-get install -y gcc &&
+    sudo snap install go --classic && # install go
+    echo "export GOPATH=~/go" >> ~/.bashrc &&
+    echo "export PATH=$PATH:~/go/bin" >> ~/.bashrc &&
+    source ~/.bashrc &&
+    bash /vagrant/install-crun.sh &&
+    bash /vagrant/install-runsc.sh &&
+    bash /vagrant/install-youki.sh &&
+    sudo cp /vagrant/daemon-config.json /etc/docker/daemon-config.json &&
+    sudo systemctl restart docker &&
+    docker pull tensorflow/tensorflow
+  SHELL
+end
